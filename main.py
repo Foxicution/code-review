@@ -1,8 +1,11 @@
 import streamlit as st
 
+
 def main():
-    pass
+    st.header('Hello 🌎!')
+    if st.button('Balloons?'):
+        st.balloons()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
