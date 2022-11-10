@@ -1,2 +1,6 @@
-streamlit==1.14.0
 protobuf==3.20.*
+streamlit==1.14.0
+toml~=0.10.2
+openai~=0.25.0
+google-cloud-firestore~=2.7.2
+toolz~=0.12.0
