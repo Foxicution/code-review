@@ -27,7 +27,7 @@ def get_request(prompt: str) -> Optional[openai.Completion]:
     try:
         return openai.Completion.create(model="text-davinci-002",
                                         prompt=prompt,
-                                        max_tokens=1600,
+                                        max_tokens=1000,
                                         temperature=0.1,
                                         top_p=1)
     except Exception:
@@ -55,24 +55,25 @@ def get_output(prompt: str) -> str:
 
 @st.cache
 def ai_magic(prompt: str, code):
-    in_1 = prompt.format(Code=code)
+    in_1 = prompt.format(Code=code)[-2900:]
     out_1 = get_output(in_1)
     in_2 = in_1 + out_1 + '\n\nRate the code from 1 to 10:'
     out_2 = get_output(in_2)
     fin = in_2 + out_2
-    return out_1, out_2, fin
+    return out_1, out_2, fin, 0 if len(in_1) < 2900 else 1
 
 
 @st.cache
-def save_prompt(fin: bytes):
-    database.collection('ai_responses').add({'response': fin})
+def save_prompt(fin: bytes, exceed_len: int):
+    database.collection('ai_responses').add({'response': fin, 'exceeded_lenght': exceed_len})
 
 
 @st.cache
-def save_response(fin: bytes, human_response: bytes, human_score: int):
+def save_response(fin: bytes, human_response: bytes, human_score: int, exceed_len: int):
     database.collection('responses').add({'ai_response': fin,
                                           'human_evaluation': human_response,
-                                          'human_score': human_score})
+                                          'human_score': human_score,
+                                          'exceeded_lenght': exceed_len})
 
 
 database, prompts = setup(st.secrets)
