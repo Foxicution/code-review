@@ -98,9 +98,9 @@ def main():
             if not st.session_state.get('button'):
                 st.session_state['button'] = button
             if st.session_state['button']:
-                out_1, out_2, fin = ai_magic(prompt, code)
+                out_1, out_2, fin, exceed_len = ai_magic(prompt, code)
                 encoded_fin = fin.encode('utf-8')
-                save_prompt(encoded_fin)
+                save_prompt(encoded_fin, exceed_len)
                 with temp.form('my_form'):
                     st.text('1:' + out_1 + '\n\nScore:' + out_2)
                     human_response = st.text_area("Do you agree with the AI? What would you change?",
@@ -108,7 +108,7 @@ def main():
                     human_score = st.slider("Rate the code from 1 to 10:", 1, 10,
                                             value=int(re.findall(r'\d+', out_2)[0]), step=1)
                     if st.form_submit_button("Submit"):
-                        save_response(encoded_fin, human_response.encode('utf-8'), human_score)
+                        save_response(encoded_fin, human_response.encode('utf-8'), human_score, exceed_len)
                         st.session_state['button'] = False
                         temp.button('Restart')
 
