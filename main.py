@@ -81,7 +81,8 @@ database, prompts = setup(st.secrets)
 def main():
     temp = st.empty()
     with temp.container():
-        code_uploaded = st.file_uploader("Upload your code file here")
+        code_uploaded = st.file_uploader(
+            "Upload your code file here. (Hint: Long code files might give unexpected results")
     if code_uploaded:
         code = decode_st_code(code_uploaded)
         if code is None:
