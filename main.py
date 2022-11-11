@@ -55,7 +55,7 @@ def get_output(prompt: str) -> str:
 
 @st.cache
 def ai_magic(prompt: str, code):
-    in_1 = prompt.format(Code=code)[-2900:]
+    in_1 = prompt.format(Code=code)[-3000:]
     out_1 = get_output(in_1)
     in_2 = in_1 + out_1 + '\n\nRate the code from 1 to 10:'
     out_2 = get_output(in_2)
@@ -92,6 +92,7 @@ def main():
             st.code(code)
             temp.empty()
             with temp.container():
+                st.text('Press F5 to upload a new code file')
                 category = st.selectbox("Select a category to review your code in", prompts.keys())
                 prompt = prompts[category]
                 button = st.button("Generate code review")
@@ -102,6 +103,8 @@ def main():
                 encoded_fin = fin.encode('utf-8')
                 save_prompt(encoded_fin, exceed_len)
                 with temp.form('my_form'):
+                    st.text('Press F5 to upload a new code file')
+                    st.text(f'AI rating of the code in {category} category')
                     st.text('1:' + out_1 + '\n\nScore:' + out_2)
                     human_response = st.text_area("Do you agree with the AI? What would you change?",
                                                   value='1:' + out_1, height=400)
