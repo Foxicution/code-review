@@ -103,7 +103,7 @@ def main():
                 encoded_fin = fin.encode('utf-8')
                 save_prompt(encoded_fin, exceed_len)
                 with temp.form('my_form'):
-                    st.text(f'AI rating of the code in {category} category')
+                    st.text(f'AI rating of the code in terms of {category}')
                     st.text('1:' + out_1 + '\n\nScore:' + out_2)
                     human_response = st.text_area("Do you agree with the AI? What would you change?",
                                                   value='1:' + out_1, height=400)
