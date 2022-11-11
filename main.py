@@ -69,11 +69,8 @@ def save_prompt(fin: bytes, exceed_len: int):
 
 
 @st.cache
-def save_response(fin: bytes, human_response: bytes, human_score: int, exceed_len: int):
-    database.collection('responses').add({'ai_response': fin,
-                                          'human_evaluation': human_response,
-                                          'human_score': human_score,
-                                          'exceeded_lenght': exceed_len})
+def save_response(response: dict):
+    database.collection('responses').add(response)
 
 
 database, prompts = setup(st.secrets)
@@ -105,12 +102,23 @@ def main():
                 with temp.form('my_form'):
                     st.text(f'AI rating of the code in terms of {category}')
                     st.text('1:' + out_1 + '\n\nScore:' + out_2)
-                    human_response = st.text_area("Do you agree with the AI? What would you change?",
-                                                  value='1:' + out_1, height=400)
-                    human_score = st.slider("Rate the code from 1 to 10:", 1, 10,
-                                            value=int(re.findall(r'\d+', out_2)[0]), step=1)
+                    response_output = {}
+                    for i, response in enumerate(re.split(r'\d+:', out_1)):
+                        if response:
+                            response = response.strip()
+                            response_output[f'text{i}'] = st.text_area(
+                                f'What would you change in response {i + 1}?', value=response, height=100)\
+                                .encode('utf-8')
+                            response_output[f'slider{i}'] = st.slider(f'How would you rate response {i + 1}?', 1, 10,
+                                                                      value=5, step=1)
+                    # human_response = st.text_area("Do you agree with the AI? What would you change?",
+                    #                               value='1:' + out_1, height=400)
+                    response_output['human_score'] = st.slider("How would you rate this code?", 1, 10,
+                                                        value=int(re.findall(r'\d+', out_2)[0]), step=1)
+                    response_output['exceeded_lenght'] = exceed_len
+                    response_output['ai_response'] = encoded_fin
                     if st.form_submit_button("Submit"):
-                        save_response(encoded_fin, human_response.encode('utf-8'), human_score, exceed_len)
+                        save_response(response_output)
                         st.session_state['button'] = False
                         temp.button('Restart')
 
