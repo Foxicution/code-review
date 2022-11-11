@@ -55,7 +55,7 @@ def get_output(prompt: str) -> str:
 
 @st.cache
 def ai_magic(prompt: str, code):
-    in_1 = prompt.format(Code=code)[-3000:]
+    in_1 = prompt.format(Code=code)[-12000:]
     out_1 = get_output(in_1)
     in_2 = in_1 + out_1 + '\n\nRate the code from 1 to 10:'
     out_2 = get_output(in_2)
